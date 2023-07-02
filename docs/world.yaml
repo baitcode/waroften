@@ -1,0 +1,29 @@
+# UI/Menu
+# Gamepad settings
+# Network
+# PowerUps
+# Level mechanics
+# Phisics
+# Projectiles
+# AI?
+
+
+Level
+  Tile[x:x]
+
+Player
+  Skin
+  Animation
+  Health
+  Speed
+  Score
+  Powerups
+  (???GamePadState)
+  (PlayerCotroller) 
+  (NetworkController)
+
+OtherPlayers
+  # ???
+
+Camera
+
