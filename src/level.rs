@@ -17,10 +17,10 @@ impl Level {
         }
     }
 
-    pub fn with_offset(mut self, offset: Vec3) -> Self {
-        self.offset = offset;
-        self
-    }
+    // pub fn with_offset(mut self, offset: Vec3) -> Self {
+    //     self.offset = offset;
+    //     self
+    // }
 }
 
 

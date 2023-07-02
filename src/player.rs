@@ -11,8 +11,8 @@ pub struct Player();
 
 pub fn move_player(
     mut transforms: Query<&mut Transform>,
-    mut player: Query<Entity, With<Player>>,
-    mut orbiting: Query<&OrbitingCameraState, With<Camera>>,
+    player: Query<Entity, With<Player>>,
+    orbiting: Query<&OrbitingCameraState, With<Camera>>,
     input: Res<UserInput>,
     time: Res<Time>,
 ) {
