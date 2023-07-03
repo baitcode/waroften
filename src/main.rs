@@ -7,6 +7,7 @@ use bevy::{
     prelude::*,
     input::mouse::MouseMotion,
 };
+use bevy_rapier3d::prelude::*;
 
 use bevy_inspector_egui::quick::WorldInspectorPlugin;
 
@@ -22,6 +23,13 @@ fn main() {
         .add_plugin(WorldInspectorPlugin::new())
         .add_plugin(OrbitingCameraPlugin)
         .add_plugin(UserInputPlugin)
+        .add_plugin(RapierPhysicsPlugin::<NoUserData>::default())
+        .add_plugin(RapierDebugRenderPlugin::default())
+
+        .insert_resource(RapierConfiguration {
+            gravity: -Vec3::Z * 9.81,
+            ..Default::default()
+        })
 
         .add_startup_system(world_startup)
         .add_startup_system(spawn_player)
@@ -51,30 +59,57 @@ fn world_startup(mut commands: Commands) {
         Visibility::default(),
         Transform::default(),
         GlobalTransform::default(),
-        Level::from_tiles(vec![
-            vec![0, 0, 0, 0, 0],
-            vec![0, 0, 0, 0, 0],
-            vec![0, 0, 0, 0, 0],
-            vec![0, 0, 0, 0, 0],
-            vec![0, 0, 0, 0, 0],
-        ]),
+        Level::default()
+            .add_layer(
+                vec![
+                    vec![1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+                    vec![1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+                    vec![1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+                    vec![1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+                    vec![1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+                    vec![1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+                    vec![1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+                    vec![1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+                    vec![1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+                ]
+            )
+            .add_layer(
+                vec![
+                    vec![2, 3, 4, 5, 1, 1, 1, 1, 1, 1],
+                    vec![1, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+                    vec![1, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+                    vec![1, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                    vec![1, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                    vec![1, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                    vec![1, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+                    vec![1, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+                    vec![1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+                ]
+            ),
     ));
 }
 
 fn spawn_player(mut commands: Commands, asset_server: Res<AssetServer>) {
     // TODO: How to create player bundle so that entity would still have SceneBundle transform?
+    // TODO: move out to player module
     let id = commands.spawn((
         Name::new("Player"),
         Player::default(),
         SceneBundle {
             scene: asset_server.load("cylinder.glb#Scene0"),
             transform: Transform::default()
-                .with_translation(Vec3::new(1.0, 1.0, 1.0))
+                .with_translation(Vec3::new(2.0, 2.0, 2.0))
                 .with_scale(Vec3::new(0.3, 0.3, 0.3))
                 .with_rotation(Quat::from_rotation_arc(Vec3::Y, Vec3::Z)),
             ..default()    
-        }
-    )).id();
+        },
+        // TODO: This is probably wrong
+        RigidBody::Dynamic, //?? RigidBody::KinematicPositionBased, //?? RigidBody::KinematicVelocityBased
+    )).with_children(|children| {
+        children
+            .spawn(Collider::cylinder(0.5, 0.5))
+            .insert(Transform::default().with_translation(Vec3::new(0.0, 0.5, 0.0)));
+    }).id();
 
     commands.spawn((
         Name::new("CameraBundle"),
