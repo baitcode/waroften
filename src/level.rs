@@ -65,6 +65,7 @@ pub fn draw_level(
                             scene: asset_server.load(tilename), 
                             transform: Transform::from_translation(Vec3::new(x as f32, y as f32, z as f32) + level.offset)
                                 .with_rotation(Quat::from_rotation_arc(Vec3::Y, Vec3::Z)),
+                            visibility: Visibility::Hidden,
                             ..default()
                         },
                         RigidBody::Fixed,
