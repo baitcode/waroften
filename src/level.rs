@@ -14,12 +14,12 @@ pub struct Level {
 }
 
 impl Level {
-    pub fn from_tiles(tiles: Vec<Vec<u32>>) -> Self {
-        Self {
-            tiles: vec!(tiles),
-            offset: Vec3::ZERO,
-        }
-    }
+    // pub fn from_tiles(tiles: Vec<Vec<u32>>) -> Self {
+        // Self {
+            // tiles: vec!(tiles),
+            // offset: Vec3::ZERO,
+        // }
+    // }
 
     pub fn add_layer(mut self, tiles: Vec<Vec<u32>>) -> Self {
         self.tiles.push(tiles);
@@ -65,6 +65,7 @@ pub fn draw_level(
                             scene: asset_server.load(tilename), 
                             transform: Transform::from_translation(Vec3::new(x as f32, y as f32, z as f32) + level.offset)
                                 .with_rotation(Quat::from_rotation_arc(Vec3::Y, Vec3::Z)),
+                            // visibility: Visibility::Hidden,
                             ..default()
                         },
                         RigidBody::Fixed,

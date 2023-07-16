@@ -11,6 +11,10 @@ impl Plugin for OrbitingCameraPlugin {
     }
 }
 
+// TODO: use a separate component for initialisation processing and exchanges itself for initialised component state
+// create system initialize_orbiting_camera(InitialisingOrbitingCameraState) -> theat spawns OrbitingCameraState
+// create system update_orbiting_camera(OrbitingCameraState)
+// Or add Initialised struct and update query to filter using it
 fn update_camera(
     mut transforms: Query<&mut Transform>,
     mut orbiting: Query<(Entity, &mut OrbitingCameraState)>

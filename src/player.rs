@@ -1,29 +1,44 @@
-use bevy::{
-    prelude::*,
-};
+use bevy::prelude::*;
+use bevy_rapier3d::prelude::*;
 
 use crate::orbiting::OrbitingCameraState;
-use crate::input::UserInput;
+use crate::input::Move;
 
-#[derive(Component, Default)]
-pub struct Player();
+#[derive(Component)]
+pub struct Player {
+    pub health: u32,
+}
+
+impl Default for Player {
+    fn default() -> Self {
+        Self {
+            health: 100,
+        }
+    }
+}
 
 
 pub fn move_player(
     mut transforms: Query<&mut Transform>,
+    mut velocities: Query<&mut Velocity>,
+    mut movements: EventReader<Move>,
+
     player: Query<Entity, With<Player>>,
     orbiting: Query<&OrbitingCameraState, With<Camera>>,
-    input: Res<UserInput>,
-    time: Res<Time>,
 ) {
+    if movements.is_empty() { return }
+
+    let input = movements.iter().next().unwrap();
+
     let orbiting = orbiting.iter().next().unwrap();
 
     let player_id = player.iter().next().unwrap();
-    let mut player_transform = transforms.get_mut(player_id).unwrap();
-    
-    if input.direction.length_squared() < 0.1 { return; }
+    let mut transform = transforms.get_mut(player_id).unwrap();
+    let mut velocities = velocities.get_mut(player_id).unwrap();
 
-    player_transform.look_to(input.direction, Vec3::Z);
-    player_transform.rotation *= Quat::from_rotation_y(-orbiting.longitude + std::f32::consts::PI);
-    player_transform.translation = player_transform.translation + player_transform.forward() * time.delta_seconds();
+    if input.direction != Vec3::ZERO {
+        transform.look_to(input.direction, Vec3::Z);
+        transform.rotation *= Quat::from_rotation_y(-orbiting.longitude + std::f32::consts::PI);
+    } 
+    velocities.linvel = transform.forward() * input.direction.length_squared() * input.speed;    
 }
