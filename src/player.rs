@@ -22,7 +22,6 @@ pub fn move_player(
     mut transforms: Query<&mut Transform>,
     mut velocities: Query<&mut Velocity>,
     mut movements: EventReader<Move>,
-
     player: Query<Entity, With<Player>>,
     orbiting: Query<&OrbitingCameraState, With<Camera>>,
 ) {
