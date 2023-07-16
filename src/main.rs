@@ -6,7 +6,7 @@ mod player;
 use bevy::{
     prelude::*,
     input::mouse::MouseMotion,
-    diagnostic::{FrameTimeDiagnosticsPlugin, LogDiagnosticsPlugin}
+    diagnostic::{FrameTimeDiagnosticsPlugin, LogDiagnosticsPlugin},
 };
 use bevy_rapier3d::prelude::*;
 

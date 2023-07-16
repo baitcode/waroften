@@ -35,8 +35,8 @@ impl Default for UserInput {
 }
 
 pub struct Move {
-    direction: Vec3,
-    speed: f32,
+    pub direction: Vec3,
+    pub speed: f32,
 }
 pub struct Jump {}
 pub struct Strike {}
@@ -107,4 +107,11 @@ pub fn gamepad_2_user_input(
             }
         }
     }
+
+    let direction = if user_input.direction.length_squared() >= 0.1 { user_input.direction } else { Vec3::ZERO };
+        
+    movement.send(Move {
+        direction,
+        speed: 1.0,
+    });
 }
