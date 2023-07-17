@@ -1,5 +1,6 @@
 use bevy::{
     prelude::*, 
+    input::mouse::MouseMotion,
 };
 
 pub struct OrbitingCameraPlugin;
@@ -94,3 +95,45 @@ impl Default for OrbitingCameraState {
         }
     }
 }
+
+
+pub fn rotate_camera_using_mouse(
+    mut motion_evr: EventReader<MouseMotion>,
+    mut q1: Query<&mut OrbitingCameraState, With<Camera3d>>,
+    time: Res<Time>,
+) {
+    for ev in motion_evr.iter() {        
+        for mut camera in q1.iter_mut() {
+            if ev.delta.length() < 0.1 {
+                continue;
+            }
+
+            camera.longitude += ev.delta.x * time.delta_seconds() * 0.1;
+            camera.latitude -= ev.delta.y * time.delta_seconds() * 0.1;
+        }
+    }
+}
+
+
+#[derive(Component,Default)]
+pub struct Target {
+}
+
+pub fn spawn_camera(
+    mut commands: Commands, 
+    mut added_player: Query<Entity, Added<Target>>
+ ) {
+    for id in added_player.iter_mut() {
+        commands.spawn((
+            Name::new("CameraBundle"),
+            Camera3dBundle {
+                transform: Transform::default()
+                    .with_translation(Vec3::new(10.0, 10.0, 10.0)),
+                ..Default::default()
+            },
+            OrbitingCameraState::default()
+                .with_target(id),
+        ));
+    }
+}
+

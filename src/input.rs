@@ -112,6 +112,6 @@ pub fn gamepad_2_user_input(
         
     movement.send(Move {
         direction,
-        speed: 1.0,
+        speed: 5.0,
     });
 }
