@@ -94,10 +94,6 @@ pub fn gamepad_2_user_input(
                     GamepadAxisType::LeftStickY => user_input.direction.y = event.value,
                     _ => {},
                 }
-                movement.send(Move {
-                    direction: user_input.direction,
-                    speed: 1.0,
-                });
             }
             GamepadEvent::Button(event) => {
                 println!("{} {}", event.value, enum_to_string(&event.button_type));

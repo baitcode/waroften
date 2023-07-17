@@ -97,7 +97,6 @@ pub fn move_player(
     let player = players.get(player_id).unwrap();
 
     if !player.managed { return }
-
     if movements.is_empty() { return }
     if orbiting.is_empty() { return }
     
