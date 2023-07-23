@@ -2,6 +2,7 @@ mod input;
 mod orbiting;
 mod level;
 mod player;
+mod menu;
 
 use bevy::{
     prelude::*,
@@ -12,38 +13,42 @@ use bevy_rapier3d::prelude::*;
 use bevy_inspector_egui::quick::WorldInspectorPlugin;
 use bevy_replicon::prelude::*;
 
+use belly::prelude::*;
+
 use crate::input::UserInputPlugin;
 use crate::orbiting::{OrbitingCameraPlugin, rotate_camera_using_mouse, spawn_camera};
 use crate::level::{Level, draw_level};
 use crate::player::{PlayerPlugin, Player};
+use crate::menu::draw_menu;
 
+// .add_plugin(WorldInspectorPlugin::new())
+// .add_plugin(OrbitingCameraPlugin)
+// .add_plugin(UserInputPlugin)
+// .add_plugin(RapierPhysicsPlugin::<NoUserData>::default())
+// .add_plugin(RapierDebugRenderPlugin::default())
+// .add_plugin(LogDiagnosticsPlugin::default())
+// .add_plugin(FrameTimeDiagnosticsPlugin::default())
+// .add_plugin(PlayerPlugin)
+
+// .insert_resource(RapierConfiguration {
+//     gravity: -Vec3::Z * 9.81,
+//     ..Default::default()
+// })
+
+// .add_startup_system(world_startup)
+
+// .add_system(spawn_camera)
+
+// .add_system(draw_level)
+// .add_system(rotate_camera_using_mouse)
 
 fn main() {
     App::new()
         .add_plugins(DefaultPlugins)
-        .add_plugins(ReplicationPlugins)
+        .add_plugin(BellyPlugin)
 
-        .add_plugin(WorldInspectorPlugin::new())
-        .add_plugin(OrbitingCameraPlugin)
-        .add_plugin(UserInputPlugin)
-        .add_plugin(RapierPhysicsPlugin::<NoUserData>::default())
-        .add_plugin(RapierDebugRenderPlugin::default())
-        .add_plugin(LogDiagnosticsPlugin::default())
-        .add_plugin(FrameTimeDiagnosticsPlugin::default())
-        .add_plugin(PlayerPlugin)
-        
-        .insert_resource(RapierConfiguration {
-            gravity: -Vec3::Z * 9.81,
-            ..Default::default()
-        })
+        .add_startup_system(draw_menu)
 
-        .add_startup_system(world_startup)
-
-        .add_system(spawn_camera)
-
-        .add_system(draw_level)
-        .add_system(rotate_camera_using_mouse)
-        
         .run();
 }
 
@@ -54,7 +59,6 @@ pub enum ClientState {
     InGame,
     Loading
 }
-
 
 fn world_startup(
     mut commands: Commands,
